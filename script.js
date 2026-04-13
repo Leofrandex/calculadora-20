@@ -315,13 +315,13 @@ async function exportData() {
       plazo: state.plazo
     },
     output: {
-      montoFinanciar: montoFinanciar,
+      montoFinanciar: parseFloat(montoFinanciar.toFixed(2)),
       comisionFlat: 0,
-      inicialFlat: state.inicial,
-      cuotaMensual: cuotaMensual,
-      totalPagar: totalPagar,
+      inicialFlat: parseFloat(state.inicial.toFixed(2)),
+      cuotaMensual: parseFloat(cuotaMensual.toFixed(2)),
+      totalPagar: parseFloat(totalPagar.toFixed(2)),
       plazosDisponibles: plazosDisponibles,
-      inicialRecomendadaMinima: minInicial
+      inicialRecomendadaMinima: parseFloat(minInicial.toFixed(2))
     }
   };
 
@@ -429,7 +429,7 @@ async function generatePlanVentas(event) {
     realizadoPor: document.getElementById('pvRealizadoPor').value,
     cliente: document.getElementById('pvCliente').value,
     transductores: document.getElementById('pvTransductores').value,
-    adicionales: Array.from(document.querySelectorAll('#pvAdicionales input[type="checkbox"]:checked')).map(cb => cb.value),
+    adicionales: document.getElementById('pvAdicionales').value,
     configuracion: document.getElementById('pvConfiguracion').value,
     iva: document.getElementById('pvIva').value
   };
@@ -457,13 +457,13 @@ async function generatePlanVentas(event) {
       plazo: state.plazo
     },
     output: {
-      montoFinanciar: montoFinanciar,
+      montoFinanciar: parseFloat(montoFinanciar.toFixed(2)),
       comisionFlat: 0,
-      inicialFlat: state.inicial,
-      cuotaMensual: cuotaMensual,
-      totalPagar: totalPagar,
+      inicialFlat: parseFloat(state.inicial.toFixed(2)),
+      cuotaMensual: parseFloat(cuotaMensual.toFixed(2)),
+      totalPagar: parseFloat(totalPagar.toFixed(2)),
       plazosDisponibles: plazosDisponibles,
-      inicialRecomendadaMinima: minInicial
+      inicialRecomendadaMinima: parseFloat(minInicial.toFixed(2))
     },
     planVentas: data
   };

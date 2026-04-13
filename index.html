@@ -189,12 +189,12 @@
              <input type="number" id="pvTransductores" class="form-input" min="0" required>
            </div>
            <div class="input-group">
-             <label>Adicionales</label>
-             <div class="checkbox-group" id="pvAdicionales">
-               <label class="checkbox-label"><input type="checkbox" value="Maleta"> Maleta</label>
-               <label class="checkbox-label"><input type="checkbox" value="Carrito Nacional"> Carrito Nacional</label>
-               <label class="checkbox-label"><input type="checkbox" value="Carrito Internacional"> Carrito Internacional</label>
-             </div>
+             <label for="pvAdicionales">Adicionales</label>
+             <select id="pvAdicionales" class="form-input">
+                <option value="Ninguno">Ninguno</option>
+                <option value="Carrito Nacional">Carrito Nacional</option>
+                <option value="Carrito Internacional">Carrito Internacional</option>
+             </select>
            </div>
            <div class="input-group">
              <label for="pvConfiguracion">Configuración</label>
