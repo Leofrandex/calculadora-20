@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de financiamiento 20% | Medical Premium</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body data-min-inicial="20" data-max-plazo="14">
+  
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo-area">
+        <img src="./Innomed1.png" alt="Innomed" class="sidebar-logo">
+      </div>
+      <nav class="nav-menu">
+        <a href="#" class="nav-link active">
+          <i class="ph ph-calculator"></i>
+          <span>Calculadora</span>
+        </a>
+        <a href="#" class="nav-link">
+          <i class="ph ph-chart-line-up"></i>
+          <span>Reportes</span>
+        </a>
+        <a href="#" class="nav-link">
+          <i class="ph ph-users"></i>
+          <span>Clientela</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <img src="https://ui-avatars.com/api/?name=Admin&background=0047AB&color=fff" alt="User Avatar" class="avatar">
+          <div class="user-info">
+            <span class="user-name">Administrador</span>
+            <span class="user-role">Financiamiento</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-header">
+        <div>
+          <h1 class="page-title">Simulador de financiamiento</h1>
+          <p class="page-subtitle">Cotice equipos médicos de manera rápida y precisa.</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline" onclick="resetCalculator()"><i class="ph ph-arrow-counter-clockwise"></i> Limpiar</button>
+        </div>
+      </header>
+
+
+
+      <div class="calculator-grid">
+        <!-- Input Section -->
+        <section class="card input-section glass-panel">
+          <h2 class="section-title"><i class="ph ph-faders"></i> Parámetros de cotización</h2>
+          <div class="input-group mt-2">
+            <label for="nombreEquipo">Nombre del equipo</label>
+            <div class="input-wrapper">
+              <i class="ph ph-device-tablet text-blue"></i>
+              <input type="text" id="nombreEquipo" list="equiposList" class="calc-input" placeholder="Escriba o seleccione un equipo">
+              <datalist id="equiposList">
+                <option value="E1 BW"></option>
+                <option value="E1 EXP"></option>
+                <option value="E2"></option>
+                <option value="X11"></option>
+                <option value="P9 ELITE"></option>
+                <option value="P20 ELITE"></option>
+                <option value="P40 ELITE"></option>
+                <option value="P60"></option>
+                <option value="P80 ELITE"></option>
+                <option value="TTN DE MESA"></option>
+                <option value="SILLA DE PISO PÉLVICO"></option>
+                <option value="HIFUCARE"></option>
+                <option value="POLUX"></option>
+              </datalist>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="precioEquipo">Precio del equipo ($)</label>
+            <div class="input-wrapper">
+              <i class="ph ph-currency-dollar text-blue"></i>
+              <input type="number" id="precioEquipo" placeholder="Ej. 10000" min="0" oninput="onPrecioChange()">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="inicial">Monto de la inicial ($)</label>
+            <div class="input-wrapper">
+              <i class="ph ph-piggy-bank text-orange"></i>
+              <input type="number" id="inicial" placeholder="Mínimo 20%" oninput="onInicialChange()">
+            </div>
+            <div class="helper-text" id="helperMinInicial"><span id="helperMinText">Mínimo obligatorio (20%): </span><span id="minInicialLabel" class="text-orange font-semibold">$0.00</span></div>
+            <div class="alert-text" id="alertaInicial"></div>
+            <div class="range-slider">
+              <input type="range" id="inicialSlider" min="20" max="100" value="20" class="slider" oninput="syncSlider()">
+              <div class="slider-value"><span id="sliderPercent">20</span>%</div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Plazo de financiamiento (meses)</label>
+            <div class="plazo-display-row">
+              <div class="plazo-badge">
+                <span id="plazoSelectedLabel">—</span>
+                <span class="plazo-badge-unit">meses</span>
+              </div>
+              <span class="plazo-hint" id="plazoHint">Deslice para seleccionar</span>
+            </div>
+            <div class="plazo-slider-wrap">
+              <input type="range" id="plazoSlider" min="6" max="14" step="1" class="plazo-range" oninput="onPlazoSlider()">
+              <div class="plazo-ticks-row" id="plazoTicks"></div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Output Section -->
+        <section class="card output-section glass-panel">
+          <h2 class="section-title"><i class="ph ph-receipt"></i> Resumen del plan</h2>
+          
+          <div class="results-grid">
+            
+            <div class="result-box glow-subtle full-width">
+              <span class="result-label">Monto a financiar</span>
+              <span class="result-value" id="valMontoFinanciar">$0.00</span>
+              <i class="ph ph-chart-pie-slice icon-bg"></i>
+            </div>
+
+            <div class="result-box glow-subtle accent-border">
+              <span class="result-label">Pago inicial total</span>
+              <span class="result-value text-orange" id="valInicialFlat">$0.00</span>
+              <i class="ph ph-hand-coins icon-bg"></i>
+            </div>
+            
+            <div class="result-box highlight-box glow-subtle">
+              <span class="result-label">Cuota mensual</span>
+              <span class="result-value" id="valCuotaMensual">$0.00</span>
+              <div class="tag-rate">3.5% Mensual</div>
+              <i class="ph ph-calendar-check icon-bg text-white"></i>
+            </div>
+
+            <div class="result-box full-width glow-subtle">
+              <div class="total-flex">
+                <div>
+                  <span class="result-label">Costo total final</span>
+                  <span class="result-value" id="valTotalPagar">$0.00</span>
+                </div>
+                <div class="icon-circle">
+                  <i class="ph ph-check-circle text-orange"></i>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="result-actions" style="margin-top: 32px; display: flex; gap: 16px; flex-direction: column;">
+            <button class="btn btn-whatsapp" onclick="sendWhatsapp()" style="width: 100%; justify-content: center;"><i class="ph ph-whatsapp-logo"></i> Enviar resumen por WhatsApp</button>
+            <button class="btn btn-primary" onclick="showVentasForm()" style="width: 100%; justify-content: center;"><i class="ph ph-file-text"></i> Generar plan de venta</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Formulario Plan de Venta -->
+      <div id="ventasFormSection" style="display: none;" class="card glass-panel fade-in">
+        <header class="form-header">
+           <h2 class="section-title"><i class="ph ph-file-text"></i> Plan de venta</h2>
+           <button class="btn btn-outline" onclick="hideVentasForm()" type="button"><i class="ph ph-arrow-left"></i> Volver</button>
+        </header>
+
+        <form id="planVentasForm" class="ventas-form" onsubmit="generatePlanVentas(event)">
+           <div class="input-group mt-2">
+             <label for="pvRealizadoPor">Realizado por</label>
+             <input type="text" id="pvRealizadoPor" class="form-input" required>
+           </div>
+           <div class="input-group">
+             <label for="pvCliente">Cliente</label>
+             <input type="text" id="pvCliente" class="form-input" required>
+           </div>
+           <div class="input-group">
+             <label for="pvTransductores">Número de transductores</label>
+             <input type="number" id="pvTransductores" class="form-input" min="0" required>
+           </div>
+           <div class="input-group">
+             <label>Adicionales</label>
+             <div class="checkbox-group" id="pvAdicionales">
+               <label class="checkbox-label"><input type="checkbox" value="Maleta"> Maleta</label>
+               <label class="checkbox-label"><input type="checkbox" value="Carrito Nacional"> Carrito Nacional</label>
+               <label class="checkbox-label"><input type="checkbox" value="Carrito Internacional"> Carrito Internacional</label>
+             </div>
+           </div>
+           <div class="input-group">
+             <label for="pvConfiguracion">Configuración</label>
+             <input type="text" id="pvConfiguracion" class="form-input">
+           </div>
+           <div class="input-group">
+             <label for="pvIva">IVA</label>
+             <select id="pvIva" class="form-input">
+               <option value="Con IVA">Con IVA</option>
+               <option value="Sin IVA">Sin IVA</option>
+             </select>
+           </div>
+
+           <button type="submit" class="btn btn-primary mt-4 w-full" style="justify-content: center;"><i class="ph ph-download-simple"></i> Generar y Descargar Plan</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
