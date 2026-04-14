@@ -14,10 +14,14 @@ const state = { precioEquipo: null, inicial: null, plazo: null };
 
 const TASA_MENSUAL = 0.035; // 3.5% mensual
 
-const formatCurrency = (v) => new Intl.NumberFormat('en-US', {
-  style: 'currency', currency: 'USD',
-  minimumFractionDigits: 2, maximumFractionDigits: 2
-}).format(v);
+const formatCurrency = (v) => {
+  return new Intl.NumberFormat('de-DE', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(v).replace('$', '$ ').replace(/\u00a0/g, ' '); // Asegura espacio tras el símbolo si es necesario
+};
 
 // ─────────────────────────────────────────────
 //  DOM REFS
@@ -196,14 +200,16 @@ function calculate() {
     return;
   }
 
-  //  Fórmulas (calculadora.md)
-  const comisionFlat   = 0; // Eliminada por solicitud del equipo
+  //  Fórmulas (Sistema Francés / Amortización de Saldo Deudor)
+  const comisionFlat   = 0;
   const montoFinanciar = precio - state.inicial;
-  const inicialFlat    = state.inicial; // Ya no hay comision flat
-  const capitalMensual = montoFinanciar / plazo;
-  const interesMensual = montoFinanciar * TASA_MENSUAL;
-  const cuotaMensual   = capitalMensual + interesMensual;
-  const totalPagar     = state.inicial + (cuotaMensual * plazo);
+  const inicialFlat    = state.inicial;
+  
+  const i = TASA_MENSUAL;
+  const n = plazo;
+  // Formula: P * (i * (1+i)^n) / ((1+i)^n - 1)
+  const cuotaMensual = montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+  const totalPagar   = state.inicial + (cuotaMensual * n);
 
   if (outMontoFinanciar) animValue(outMontoFinanciar, formatCurrency(montoFinanciar));
   if (outComisionFlat)   animValue(outComisionFlat,   formatCurrency(comisionFlat));
@@ -357,9 +363,10 @@ function sendWhatsapp() {
   let cuota = 'N/A';
   if (state.precioEquipo && state.plazo && state.inicial !== null) {
       const montoFinanciar = state.precioEquipo - state.inicial;
-      const capitalMensual = montoFinanciar / state.plazo;
-      const interesMensual = montoFinanciar * TASA_MENSUAL;
-      cuota = formatCurrency(capitalMensual + interesMensual);
+      const i = TASA_MENSUAL;
+      const n = state.plazo;
+      const cuotaVal = montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+      cuota = formatCurrency(cuotaVal);
   }
 
   const msg = `HOSPITALAR - Venta a plazos INNOMED 
@@ -436,10 +443,10 @@ async function generatePlanVentas(event) {
   
   // Añadimos también los datos de la calculadora (el payload de gemini)
   const montoFinanciar = state.precioEquipo ? (state.precioEquipo - state.inicial) : 0;
-  const capitalMensual = state.plazo ? (montoFinanciar / state.plazo) : 0;
-  const interesMensual = montoFinanciar * TASA_MENSUAL;
-  const cuotaMensual = capitalMensual + interesMensual;
-  const totalPagar = state.inicial !== null ? (state.inicial + (cuotaMensual * state.plazo)) : 0;
+  const i = TASA_MENSUAL;
+  const n = state.plazo || 1;
+  const cuotaMensual = montoFinanciar > 0 ? (montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1)) : 0;
+  const totalPagar = state.inicial !== null ? (state.inicial + (cuotaMensual * n)) : 0;
   const minInicial = state.precioEquipo ? (state.precioEquipo * MIN_INICIAL_PCT) : 0;
 
   let plazosDisponibles = [];
