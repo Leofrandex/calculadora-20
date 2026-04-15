@@ -23,6 +23,10 @@ const formatCurrency = (v) => {
   }).format(v).replace('$', '$ ').replace(/\u00a0/g, ' '); // Asegura espacio tras el símbolo si es necesario
 };
 
+const roundUp10 = (v) => {
+  return Math.ceil(v / 10) * 10;
+};
+
 // ─────────────────────────────────────────────
 //  DOM REFS
 // ─────────────────────────────────────────────
@@ -208,7 +212,8 @@ function calculate() {
   const i = TASA_MENSUAL;
   const n = plazo;
   // Formula: P * (i * (1+i)^n) / ((1+i)^n - 1)
-  const cuotaMensual = montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+  let cuotaMensual = montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+  cuotaMensual = roundUp10(cuotaMensual);
   const totalPagar   = state.inicial + (cuotaMensual * n);
 
   if (outMontoFinanciar) animValue(outMontoFinanciar, formatCurrency(montoFinanciar));
@@ -299,10 +304,11 @@ async function exportData() {
   btn.innerHTML = `<i class="ph ph-spinner ph-spin"></i> Guardando...`;
 
   const montoFinanciar = state.precioEquipo - state.inicial;
-  const capitalMensual = montoFinanciar / state.plazo;
-  const interesMensual = montoFinanciar * TASA_MENSUAL;
-  const cuotaMensual = capitalMensual + interesMensual;
-  const totalPagar = state.inicial + (cuotaMensual * state.plazo);
+  const i = TASA_MENSUAL;
+  const n = state.plazo;
+  let cuotaMensual = montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+  cuotaMensual = roundUp10(cuotaMensual);
+  const totalPagar = state.inicial + (cuotaMensual * n);
   const minInicial = state.precioEquipo * MIN_INICIAL_PCT;
   
   let plazosDisponibles = [];
@@ -365,7 +371,8 @@ function sendWhatsapp() {
       const montoFinanciar = state.precioEquipo - state.inicial;
       const i = TASA_MENSUAL;
       const n = state.plazo;
-      const cuotaVal = montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+      let cuotaVal = montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+      cuotaVal = roundUp10(cuotaVal);
       cuota = formatCurrency(cuotaVal);
   }
 
@@ -445,7 +452,8 @@ async function generatePlanVentas(event) {
   const montoFinanciar = state.precioEquipo ? (state.precioEquipo - state.inicial) : 0;
   const i = TASA_MENSUAL;
   const n = state.plazo || 1;
-  const cuotaMensual = montoFinanciar > 0 ? (montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1)) : 0;
+  let cuotaMensual = montoFinanciar > 0 ? (montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1)) : 0;
+  if (cuotaMensual > 0) cuotaMensual = roundUp10(cuotaMensual);
   const totalPagar = state.inicial !== null ? (state.inicial + (cuotaMensual * n)) : 0;
   const minInicial = state.precioEquipo ? (state.precioEquipo * MIN_INICIAL_PCT) : 0;
 
