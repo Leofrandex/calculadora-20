@@ -23,8 +23,8 @@ const formatCurrency = (v) => {
   }).format(v).replace('$', '$ ').replace(/\u00a0/g, ' '); // Asegura espacio tras el símbolo si es necesario
 };
 
-const roundUp10 = (v) => {
-  return Math.ceil(v / 10) * 10;
+const roundUpUnit = (v) => {
+  return Math.ceil(v);
 };
 
 // ─────────────────────────────────────────────
@@ -213,7 +213,7 @@ function calculate() {
   const n = plazo;
   // Formula: P * (i * (1+i)^n) / ((1+i)^n - 1)
   let cuotaMensual = montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
-  cuotaMensual = roundUp10(cuotaMensual);
+  cuotaMensual = roundUpUnit(cuotaMensual);
   const totalPagar   = state.inicial + (cuotaMensual * n);
 
   if (outMontoFinanciar) animValue(outMontoFinanciar, formatCurrency(montoFinanciar));
@@ -307,7 +307,7 @@ async function exportData() {
   const i = TASA_MENSUAL;
   const n = state.plazo;
   let cuotaMensual = montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
-  cuotaMensual = roundUp10(cuotaMensual);
+  cuotaMensual = roundUpUnit(cuotaMensual);
   const totalPagar = state.inicial + (cuotaMensual * n);
   const minInicial = state.precioEquipo * MIN_INICIAL_PCT;
   
@@ -372,7 +372,7 @@ function sendWhatsapp() {
       const i = TASA_MENSUAL;
       const n = state.plazo;
       let cuotaVal = montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
-      cuotaVal = roundUp10(cuotaVal);
+      cuotaVal = roundUpUnit(cuotaVal);
       cuota = formatCurrency(cuotaVal);
   }
 
@@ -453,7 +453,7 @@ async function generatePlanVentas(event) {
   const i = TASA_MENSUAL;
   const n = state.plazo || 1;
   let cuotaMensual = montoFinanciar > 0 ? (montoFinanciar * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1)) : 0;
-  if (cuotaMensual > 0) cuotaMensual = roundUp10(cuotaMensual);
+  if (cuotaMensual > 0) cuotaMensual = roundUpUnit(cuotaMensual);
   const totalPagar = state.inicial !== null ? (state.inicial + (cuotaMensual * n)) : 0;
   const minInicial = state.precioEquipo ? (state.precioEquipo * MIN_INICIAL_PCT) : 0;
 
