@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de financiamiento 20% | Medical Premium</title>
+  <title>Calculadora de financiamiento 10% | Medical Premium</title>
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
-<body data-min-inicial="20" data-max-plazo="18">
+<body data-min-inicial="10" data-max-plazo="18">
   
   <div class="dashboard">
     <!-- Sidebar -->
@@ -95,13 +95,13 @@
             <label for="inicial">Monto de la inicial ($)</label>
             <div class="input-wrapper">
               <i class="ph ph-piggy-bank text-orange"></i>
-              <input type="number" id="inicial" placeholder="Mínimo 20%" oninput="onInicialChange()">
+              <input type="number" id="inicial" placeholder="Mínimo 10%" oninput="onInicialChange()">
             </div>
-            <div class="helper-text" id="helperMinInicial"><span id="helperMinText">Mínimo obligatorio (20%): </span><span id="minInicialLabel" class="text-orange font-semibold">$0.00</span></div>
+            <div class="helper-text" id="helperMinInicial"><span id="helperMinText">Mínimo obligatorio (10%): </span><span id="minInicialLabel" class="text-orange font-semibold">$0.00</span></div>
             <div class="alert-text" id="alertaInicial"></div>
             <div class="range-slider">
-              <input type="range" id="inicialSlider" min="20" max="100" value="20" class="slider" oninput="syncSlider()">
-              <div class="slider-value"><span id="sliderPercent">20</span>%</div>
+              <input type="range" id="inicialSlider" min="10" max="100" value="10" class="slider" oninput="syncSlider()">
+              <div class="slider-value"><span id="sliderPercent">10</span>%</div>
             </div>
           </div>
 
