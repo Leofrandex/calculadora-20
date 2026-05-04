@@ -439,6 +439,7 @@ async function generatePlanVentas(event) {
   btn.disabled = true;
 
   const data = {
+    emailEmisor: document.getElementById('pvEmail').value,
     nombreEquipo: elNombreEquipo ? elNombreEquipo.value : 'N/A',
     realizadoPor: document.getElementById('pvRealizadoPor').value,
     cliente: document.getElementById('pvCliente').value,
